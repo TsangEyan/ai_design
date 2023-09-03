@@ -16,6 +16,7 @@ from PIL import Image, PngImagePlugin
 
 # Create your views here.
 openai.api_key = "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"
+messageList = []
 
 
 def UI_mindmap(request):
@@ -27,8 +28,8 @@ def UI_mindmap(request):
         # 输入design problem 输出Requirements
         if designID == '5W1H':
             prompt = request.POST['message']
-            print(prompt)
-            response = get_completion(generate_requirements_prompt(prompt))
+            response = get_completion_from_messages(
+                generate_requirements_prompt(prompt))
             # print(response)
             # print(type(response)) # <class 'dict'>
             return JsonResponse(response)
@@ -38,16 +39,17 @@ def UI_mindmap(request):
         elif designID == 'Requirements':
             prompt = request.POST['requirements']
             print(prompt)
-            response = get_completion(generate_functions_prompt(prompt))
+            response = get_completion_from_messages(
+                generate_functions_prompt(prompt))
             print(response)
-            # print(type(response)) # <class 'dict'>
             return JsonResponse(response)
 
         # 输入Function 输出Behaviors
         elif designID == 'Functions':
             prompt = request.POST['functions']
             print(prompt)
-            response = get_completion(generate_behaviors_prompt(prompt))
+            response = get_completion_from_messages(
+                generate_behaviors_prompt(prompt))
             print(response)
             # print(type(response)) # <class 'dict'>
             return JsonResponse(response)
@@ -56,7 +58,8 @@ def UI_mindmap(request):
         elif designID == 'Behaviors':
             prompt = request.POST['behaviors']
             print(prompt)
-            response = get_completion(generate_structures_prompt(prompt))
+            response = get_completion_from_messages(
+                generate_structures_prompt(prompt))
             print(response)
             # print(type(response)) # <class 'dict'>
             return JsonResponse(response)
@@ -66,7 +69,7 @@ def UI_mindmap(request):
             kanseiN = request.POST['kansei_n']
             kanseiA = request.POST['kansei_a']
             # print(prompt)
-            response = get_completion(
+            response = get_completion_from_messages(
                 generate_kansei(kanseiN, kanseiA))
             print(response)
             # print(type(response)) # <class 'dict'>
@@ -99,22 +102,31 @@ def get_completion_from_messages(messages, model="gpt-4", temperature=0.7):
         temperature=temperature,  # 控制模型输出的随机程度
     )
 #   print(str(response.choices[0].message))
-    print(response)
+
+    print(response.choices[0].message["content"])
     response = string2json(response.choices[0].message["content"])
     return response
 
 
 def string2json(data_string):
-    # 使用 json.loads 转换字符串为 JSON 格式
-    data_json = json.loads(data_string)
-    return data_json
+    try:
+        # 使用 json.loads 转换字符串为 JSON 格式
+        data_json = json.loads(data_string)
+        return data_json
+    except json.JSONDecodeError:
+        response = reload()
+        string2json(response)
 
 
 def generate_requirements_prompt(design):
+    messageList.append({'role': 'system',
+                       'content': 'you act as a designer and work with me on a product design task.In the design process,\
+                        you need to complete the structure design of the product according to FBS (Function-Behavior-Structure) strategy \
+                        and the appearance design based on kansei engineering. you need to respond only as this designer. Do not write all the conversation at once. Please wait for the questions and give the answer.\
+                        Only provide the JSON output and do not include any unnecessary words.\
+                        Only just need an output in pure JSON format. No explanations, comments or additional text is needed. Please follow this format strictly.'})
+
     prompt = f"""
-        I want you to act as a designer and work with me on a product design task. \
-        In the design process, you need to complete the structure design of the product according to FBS (Function-Behavior-Structure) strategy and the appearance design based on kansei engineering. \
-        I want you to respond only as this designer. Do not write all the conversation at once. Please wait for my questions and give me the answer.  \
          Answer the following six questions according to the design problem:
             1 - Who will use this product? 
             2 - What will the user do with this product? 
@@ -126,36 +138,33 @@ def generate_requirements_prompt(design):
         Design problem given by triple backticks : 
         ```{design}``` \
        
-        Output JSON: <json with who/what/when/why/where/how and Answer>
-        Only provide the JSON output and do not include any unnecessary words.
+        Output JSON: <json with who/what/when/why/where/how and Answer>\
+        Only provide the JSON output and do not include any unnecessary words.\
 
         """
+
+    messageList.append({'role': 'user', 'content': prompt})
+
     # print(prompt)
-    return prompt
+    return messageList
 
 
 def generate_functions_prompt(design):
     prompt = f"""
-        I want you to act as a designer and work with me on a product design task. In the design process, you need to complete the structure design of the product according to FBS (Function-Behavior-Structure) strategy and the appearance design based on kansei engineering. I want you to respond only as this designer. Do not write all the conversation at once. Please wait for my questions and give me the answer.\
-        Design problem: a lounge chair intended for domestic use that needs to be appealing and attract the user to sit and relax. \
         Product design requirement given by triple backticks: 
             ```{design}```
-        What functions does the product need to have in order to meet these requirements?
+        What functions does the product need to have in order to meet these requirements? \
 
         I would like to receive a JSON format output, where each entry has a key as a brief name of the function, and the value is a detailed description of that function. For example: "Brief Name": "Function Description". \
-        Only provide the JSON output and do not include any unnecessary words.
+        Only provide the JSON output and do not include any unnecessary words. 
 
         """
-
-    return prompt
+    messageList.append({'role': 'user', 'content': prompt})
+    return messageList
 
 
 def generate_behaviors_prompt(design):
     prompt = f"""
-        I want you to act as a designer and work with me on a product design task. In the design process, you need to complete the structure design of the product according to FBS (Function-Behavior-Structure) strategy and the appearance design based on kansei engineering. Please respond only as this designer and wait for my questions to provide answers.
-        
-        Design problem: a lounge chair intended for domestic use that should be appealing and entice the user to sit and relax. 
-
         Functions of the product given by triple backticks: 
             ```{design}```
 
@@ -176,22 +185,18 @@ def generate_behaviors_prompt(design):
         }}
         Provide only the JSON output and omit any extraneous content.
         """
-    return prompt
+    messageList.append({'role': 'user', 'content': prompt})
+    return messageList
 
 
 def generate_structures_prompt(design):
-
     prompt = f"""
-        I want you to act as a designer and work with me on a product design task. In the design process, you need to complete the structure design of the product according to FBS (Function-Behavior-Structure) strategy and the appearance design based on kansei engineering. I want you to respond only as this designer. Do not write all the conversation at once. Please wait for my questions and give me the answer.\
-        Design problem: a lounge chair intended for domestic use that needs to be appealing and attract the user to sit and relax. \
-        
         Behaviors that the product needs to achieve given by triple backticks:
             ```{design}```
 
         What structures can achieve the above behaviors? Please Use the FBS model to reason the substructures of this product.\
         
-        
-        I would like to receive a JSON format output. I expect the output in the following JSON format:
+        I would like to receive a JSON format output. I expect the output in the following JSON format:\
         {{
             "Behavior_Name": {{
                 "structures_Name": "Corresponding Detailed structures Description",
@@ -203,11 +208,13 @@ def generate_structures_prompt(design):
             }},
             ...
         }}
-        Only provide the JSON output and do not include any unnecessary words.
-
+        Only provide the JSON output and do not include any unnecessary words.\
+        Only provide the JSON output and do not include any unnecessary words.\
+        I just need an output in pure JSON format. No explanations, comments or additional text is needed. Please follow this format strictly.\
         """
 
-    return prompt
+    messageList.append({'role': 'user', 'content': prompt})
+    return messageList
 
 
 def generate_kansei(nouns, adjectives):
@@ -233,27 +240,11 @@ def generate_kansei(nouns, adjectives):
             }}
             
         }}
-
         Only provide the JSON output and do not include any unnecessary words.
-
-
         """
 
-    return prompt
-
-
-def generate_prompt_test(design):
-    animal = 'cat'
-    return """Suggest three names for an animal that is a superhero.
-
-        Animal: Cat
-        Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-        Animal: Dog
-        Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-        Animal: {}
-        Names:""".format(
-        animal.capitalize()
-    )
+    messageList.append({'role': 'user', 'content': prompt})
+    return messageList
 
 
 def generate_img(design):
@@ -280,3 +271,32 @@ def generate_img(design):
         img.save(file_name)
 
     return static_file_path_list
+
+
+def reload():
+    messageList.append(
+        {'role': 'user', 'content': 'I just need an output in pure JSON format. No explanations, comments or additional text is needed. Please follow this format strictly.'})
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=messageList,
+        temperature='0.7',  # 控制模型输出的随机程度
+    )
+#   print(str(response.choices[0].message))
+
+    print(response.choices[0].message["content"])
+    return response.choices[0].message["content"]
+
+
+def generate_prompt_test(design):
+    animal = 'cat'
+    return """Suggest three names for an animal that is a superhero.
+
+        Animal: Cat
+        Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
+        Animal: Dog
+        Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
+        Animal: {}
+        Names:""".format(
+        animal.capitalize()
+    )
