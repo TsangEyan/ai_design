@@ -17,10 +17,7 @@
 <body>
   <div class="container">
     <div class="left-sidebar">
-      <div class="button-container fbs-kansei-select">
-        <button id="fbs-button" class="active">FBS Design</button>
-        <button id="kansei-button">Kansei Design</button>
-      </div>
+
       <div class="left_top">
 
 
@@ -30,7 +27,7 @@
           <!-- <font color="#432876" size="2px"><span id="counter">0</span>/100</font> -->
 
           <div class="button-container">
-            <button id="design-begin">Requirements Generate</button>
+            <button id="design-begin">Generate Requirements </button>
           </div>
 
         </div>
@@ -112,36 +109,17 @@
           </div>
         </div>
         <div class="button-container">
-          <button id="send-5w1h">Functions Generate</button>
+          <button id="send-5w1h">Generate Functions </button>
         </div>
 
         <div class="button-container">
-          <button id="behaviors-generate">Behaviors Generate</button>
-          <button id="sructures-generate">Structures Generate</button>
+          <button id="behaviors-generate">Generate Behaviors</button>
+          <button id="sructures-generate">Generate Structures </button>
         </div>
 
       </div>
 
-      <div class="right_top">
-        <div class="headline"> Design Concept</div>
 
-        <div class="question-container">
-          <div class="question-box">
-            <div class="kanseibox-container" data-label="design-concept">My design</div>
-
-          </div>
-
-          <div class="answer-box">
-            <textarea id="design-concept-answer" class="kansei-scheme-textarea"
-              placeholder="Enter your design concept here."></textarea>
-          </div>
-
-        </div>
-
-
-
-
-      </div>
 
       <div class="left_bottom hidden">
         <div class="headline"> Kansei Words</div>
@@ -149,11 +127,19 @@
         <div class="question-container">
           <div class="question-box">
             <div class="label-5W1H">Nouns</div>
-            <!-- <div class="description-5W1H">What do users do with this product?</div> -->
+          </div>
+
+          <div class="description-kansei">
+            <p>You can brainstorm your inspiration resources from the following aspects:</p>
+            <ul class="kansei-ul">
+              <li><strong>Animate</strong> (e.g., tree, dolphin, …)</li>
+              <li><strong>Inanimate</strong> (e.g., cloud, wave, …)</li>
+              <li><strong>Abstract</strong> (e.g., Cyberpunk, Modernism, …)</li>
+            </ul>
           </div>
 
           <div class="answer-box">
-            <textarea id="kansei-words-n" class="answer-5w1h"></textarea>
+            <textarea id="kansei-words-n" class="answer-5w1h" placeholder="Enter Kansei Words here."></textarea>
           </div>
 
         </div>
@@ -161,11 +147,20 @@
         <div class="question-container">
           <div class="question-box">
             <div class="label-5W1H">Adjectives</div>
-            <!-- <div class="description-5W1H">What do users do with this product?</div> -->
+          </div>
+
+          <div class="description-kansei">
+            <p>You can express your expected feelings from the following aspects:</p>
+            <ul class="kansei-ul">
+              <li><strong>Physiological</strong> (e.g., Warm/Cold, Heavy/Light, Smooth/Rough, …)</li>
+              <li><strong>Psychological</strong> (e.g., Strong/Weak, Tense/Relaxed, …)</li>
+              <li><strong>Cultural</strong> (e.g., Modern, Elegant, Cute, …)</li>
+              <li><strong>Physical</strong> (e.g., Bright/Dark, Sharp/Round, Big/Small, …)</li>
+            </ul>
           </div>
 
           <div class="answer-box">
-            <textarea id="kansei-words-a" class="answer-5w1h"></textarea>
+            <textarea id="kansei-words-a" class="answer-5w1h" placeholder="Enter Kansei Words here."></textarea>
           </div>
 
         </div>
@@ -179,54 +174,14 @@
 
       </div>
 
-      <div class="right_bottom hidden">
-        <div class="headline"> Design Scheme - Kansei</div>
 
-        <div class="question-container">
-          <div class="question-box">
-            <div class="kanseibox-container" data-label="shape">Shape</div>
-            <!-- <div class="description-5W1H">What do users do with this product?</div> -->
-          </div>
-
-          <div class="answer-box">
-            <textarea id="shape-answer" class="kansei-scheme-textarea"
-              placeholder="Enter your design prompt here."></textarea>
-          </div>
-
-        </div>
-
-        <div class="question-container">
-          <div class="question-box">
-            <div class="kanseibox-container" data-label="color">Color</div>
-            <!-- <div class="description-5W1H">What do users do with this product?</div> -->
-          </div>
-
-          <div class="answer-box">
-            <textarea id="color-answer" class="kansei-scheme-textarea"></textarea>
-          </div>
-
-        </div>
-
-        <div class="question-container">
-          <div class="question-box">
-            <div class="kanseibox-container" data-label="texture">Texture</div>
-            <!-- <div class="description-5W1H">What do users do with this product?</div> -->
-          </div>
-
-          <div class="answer-box">
-            <textarea id="texture-answer" class="kansei-scheme-textarea"></textarea>
-          </div>
-
-        </div>
-
-        <div class="button-container">
-          <button id="image-generate">Image Generate</button>
-        </div>
-      </div>
     </div>
 
     <div class="center-container">
-
+      <div class="button-container fbs-kansei-select">
+        <button id="fbs-button" class="active">Structure Design</button>
+        <button id="kansei-button">Appearance Design</button>
+      </div>
       <div class="mindmap-container">
         <div id="fbs-mindmap">
           <!-- <mind-map></mind-map> -->
@@ -236,11 +191,97 @@
 
         </div>
       </div>
-      <div class="image-container hidden">
 
-      </div>
     </div>
 
+    <div class="right-sidebar">
+      <div class="right_top">
+        <div class="headline"> Design Concept</div>
+
+
+        <div class="map2text-container">
+          <div class="structures-container">
+            <div class="question-container">
+              <div class="question-box">
+                <div class="kanseibox-container" data-label="design-concept1">Structures 1</div>
+
+              </div>
+
+              <div class="answer-box">
+                <textarea id="design-concept1-answer" class="kansei-scheme-textarea"
+                  placeholder="Enter your design concept here."></textarea>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+        <div class="button-container">
+          <button id="add-structure">Add New Structure</button>
+        </div>
+
+
+      </div>
+
+      <div class="right_bottom hidden">
+        <div class="headline"> Design Scheme - Kansei</div>
+
+        <div class="map2text-container">
+          <div class="question-container">
+            <div class="question-box">
+              <div class="kanseibox-container" data-label="shape">Shape</div>
+              <!-- <div class="description-5W1H">What do users do with this product?</div> -->
+            </div>
+
+            <div class="answer-box">
+              <textarea id="shape-answer" class="kansei-scheme-textarea"
+                placeholder="Enter your design concept here."></textarea>
+            </div>
+
+          </div>
+
+          <div class="question-container">
+            <div class="question-box">
+              <div class="kanseibox-container" data-label="color">Color</div>
+              <!-- <div class="description-5W1H">What do users do with this product?</div> -->
+            </div>
+
+            <div class="answer-box">
+              <textarea id="color-answer" class="kansei-scheme-textarea"
+                placeholder="Enter your design concept here."></textarea>
+            </div>
+
+          </div>
+
+          <div class="question-container">
+            <div class="question-box">
+              <div class="kanseibox-container" data-label="texture">Texture</div>
+              <!-- <div class="description-5W1H">What do users do with this product?</div> -->
+            </div>
+
+            <div class="answer-box">
+              <textarea id="texture-answer" class="kansei-scheme-textarea"
+                placeholder="Enter your design concept here."></textarea>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="button-container">
+          <button id="image-generate">Image Generate</button>
+        </div>
+      </div>
+
+      <div class="image-container hidden">
+        <div class="headline"> Design Concept</div>
+        <div class="image-box">
+          <!-- <img src="{%static 'img/output/sCrNmA3gd.png'  %}" alt="">
+          <img src="{%static 'img/output/sCrNmA3gd.png'  %}" alt="">
+          <img src="{%static 'img/output/sCrNmA3gd.png'  %}" alt="">
+          <img src="{%static 'img/output/sCrNmA3gd.png'  %}" alt=""> -->
+        </div>
+      </div>
+    </div>
 
   </div>
 

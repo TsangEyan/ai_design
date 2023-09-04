@@ -1,7 +1,37 @@
 // 思维导图交互
 
 // 记录当前选中的kanseibox-container内容
-var selectedLabel = "design-concept"; // 默认选中shape
+var selectedLabel = "design-concept1"; // 默认选中shape
+
+// 添加Structures框
+$(document).ready(function () {
+    let counter = 2; // 因为你已经有Structures 1和Structures 2
+
+    $('#add-structure').click(function () {
+        let newQuestionContainer = `
+        <div class="question-container">
+          <div class="question-box">
+            <div class="kanseibox-container" data-label="design-concept${counter}">Structures ${counter}</div>
+          </div>
+          <div class="answer-box">
+            <textarea id="design-concept${counter}-answer" class="kansei-scheme-textarea"
+              placeholder="Enter your design concept here."></textarea>
+          </div>
+        </div>
+      `;
+
+        $('.structures-container').append(newQuestionContainer);
+        counter++;
+    });
+
+    $('.map2text-container').on('click', '.kanseibox-container', function () {
+        selectedLabel = $(this).data('label');
+        updateSelectedBackground();
+    });
+});
+
+
+
 
 // 点击kanseibox-container更改当前选中内容
 document.querySelectorAll('.kanseibox-container').forEach((label) => {
@@ -12,14 +42,12 @@ document.querySelectorAll('.kanseibox-container').forEach((label) => {
 
 function updateSelectedBackground() {
     // 移除所有已经被选中的背景色
-    document.querySelectorAll('.kanseibox-container').forEach((elem) => {
-        elem.classList.remove('selected');
-    });
+    $('.kanseibox-container').removeClass('selected');
 
     // 添加新的背景色
-    const selectedElem = document.querySelector(`[data-label="${selectedLabel}"]`);
+    const selectedElem = $(`[data-label="${selectedLabel}"]`);
     if (selectedElem) {
-        selectedElem.classList.add('selected');
+        selectedElem.addClass('selected');
     }
 }
 

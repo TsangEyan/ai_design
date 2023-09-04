@@ -280,7 +280,7 @@ def reload():
     response = openai.ChatCompletion.create(
         model="gpt-4",
         messages=messageList,
-        temperature='0.7',  # 控制模型输出的随机程度
+        temperature=0.7,  # 控制模型输出的随机程度
     )
 #   print(str(response.choices[0].message))
 
