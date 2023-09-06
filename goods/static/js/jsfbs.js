@@ -85,7 +85,7 @@ $(document).ready(function () {
         var kanseiData = getKansei();
 
         sendDataToBackend(kanseiData).then(() => {
-            initMindMapKansei("Kansei")
+            initMindMapKansei("Design")
             addKansei()
         }).catch((error) => {
             console.log("Error while sending data: ", error);
@@ -136,8 +136,12 @@ function addFunctions() {
     console.log(gpt_response)
 
     var nodeList = Object.keys(gpt_response);
+    var nodeIDList = Object.keys(gpt_response);
     var rootID = jm.get_root()['id']
-    addData2MindMap(jm, rootID, nodeList, nodeList);
+    for (let k = 0; k < nodeList.length; k++) {
+        nodeList[k] = "<h3>" + nodeList[k] + "</h3>";
+    }
+    addData2MindMap(jm, rootID, nodeIDList, nodeList);
 
 }
 
@@ -171,12 +175,21 @@ function addBehaviors() {
 function getBehaviors() {
     var behaviorsData = new FormData()
 
+    if (jm && jm.get_root()) {
+        var behaviorsList = jm.get_root().children.reduce((acc, funcNode) => {
+            // 使用正则表达式提取 <h3> 和 </h3> 之间的内容
+            var match = funcNode.topic.match(/<h3>(.*?)<\/h3>/);
+            var content = match ? match[1] : '';
 
-
-    var behaviorsList = jm.get_root().children.reduce((acc, funcNode) => {
-        var behaviors = jm.get_node(funcNode.topic).children.map(child => child.topic);
-        return acc.concat(behaviors);
-    }, []);
+            if (jm.get_node(content)) {
+                var behaviors = jm.get_node(content).children.map(child => child.id);
+                return acc.concat(behaviors);
+            }
+            return acc;
+        }, []);
+    } else {
+        console.error("jm或者其根节点是null");
+    }
     var behaviorsString = behaviorsList.join('\n')
 
     behaviorsData.append("designID", "Behaviors")
@@ -212,7 +225,12 @@ function addKansei() {
 
     var rootID = jm_kansei.get_root()['id'];
     var kanseiTypeList = Object.keys(gpt_response);
-    addData2MindMap(jm_kansei, rootID, kanseiTypeList, kanseiTypeList);
+    var kanseiTypeList_show = Object.keys(gpt_response);
+    for (let k = 0; k < kanseiTypeList_show.length; k++) {
+        kanseiTypeList_show[k] = "<h3>" + kanseiTypeList_show[k] + "</h3>";
+    }
+
+    addData2MindMap(jm_kansei, rootID, kanseiTypeList, kanseiTypeList_show);
 
     for (let i = 0; i < kanseiTypeList.length; i++) {
         var kanseiIDList = Object.keys(gpt_response[kanseiTypeList[i]])
@@ -222,8 +240,6 @@ function addKansei() {
             kanseiNodeList[k] = "<h3>" + kanseiIDList[k] + "</h3> <hr> " + kanseiNodeList[k];
         }
         addData2MindMap(jm_kansei, kanseiTypeList[i], kanseiIDList, kanseiNodeList);
-
-
     }
 
 }
