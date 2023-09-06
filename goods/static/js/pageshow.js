@@ -1,3 +1,7 @@
+var DesignMAP = 'fbs'
+var jm = null
+var jm_kansei = null
+
 $(document).ready(function () {
     // 获取所有需要切换的元素
     const $leftTop = $(".left_top");
@@ -10,6 +14,8 @@ $(document).ready(function () {
 
     // FBS Design 按钮点击事件
     $("#fbs-button").click(function () {
+        DesignMAP = 'fbs'
+
         // 改变按钮颜色
         $(this).addClass('active');
         $("#kansei-button").removeClass('active');
@@ -27,6 +33,7 @@ $(document).ready(function () {
 
     // Kansei Design 按钮点击事件
     $("#kansei-button").click(function () {
+        DesignMAP = 'kansei'
         // 改变按钮颜色
         $(this).addClass('active');
         $("#fbs-button").removeClass('active');

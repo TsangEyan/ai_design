@@ -1,9 +1,6 @@
-var anser_5W1H = null;
-var gpt_response = null;
-
-
 // gpt 返回
 $(document).ready(function () {
+    createContextMenu()
     // 输入设计问题
     $('#design-begin').click(function () {
 
@@ -15,12 +12,12 @@ $(document).ready(function () {
         sendDataToBackend(DesignConcept).then(() => {
             add5W1H();
             initMindMap("Design");
+            createContextMenu();
         }).catch((error) => {
             console.log("Error while sending data: ", error);
         });
 
     });
-
 
     // 输入Requirements 输出Function
     $('#send-5w1h').click(function () {
@@ -71,7 +68,7 @@ $(document).ready(function () {
 
     });
 
-    // 输入Behaviors 输出sructures
+    // 输入Behaviors 输出structures
     $('#sructures-generate').click(function () {
         var behaviorsData = getBehaviors();
 
@@ -96,7 +93,7 @@ $(document).ready(function () {
 
     });
 
-    // 像diuffusion输入prompt
+    // 向diuffusion输入prompt
     $('#image-generate').click(function () {
         var imgData = getDiffusion();
         sendDataToBackend(imgData).then(() => {
@@ -110,39 +107,15 @@ $(document).ready(function () {
 
 });
 
+function singleReload() {
+    var ReloadData = reload();
+    sendDataToBackend(ReloadData).then(() => {
+        console.log(gpt_response)
 
-function sendDataToBackend(formData) {
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            url: "/UI_mindmap/",
-            type: "POST",
-
-            // data: dataInput,
-            data: formData,
-            contentType: false,
-            processData: false,
-            dataType: "JSON",
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken')  // 获取CSRF令牌并将其添加到请求头
-            },
-            success: function (response) {
-                gpt_response = response
-                resolve(response); // 解析 Promise
-
-            },
-            error: function (error) {
-                console.log(error);
-                reject(error); // 拒绝 Promise
-            }
-        });
+    }).catch((error) => {
+        console.log("Error while sending data: ", error);
     });
-}
 
-// 用于获取cookie的函数
-function getCookie(name) {
-    let value = "; " + document.cookie;
-    let parts = value.split("; " + name + "=");
-    if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
 
@@ -189,7 +162,7 @@ function addBehaviors() {
         var beNodeList = Object.values(gpt_response[funcNodeList[i]])
 
         for (let k = 0; k < beNodeList.length; k++) {
-            beNodeList[k] = "<h4>" + beIDList[k] + "</h4> " + beNodeList[k];
+            beNodeList[k] = "<h3>" + beIDList[k] + "</h3> <hr>" + beNodeList[k];
         }
         addData2MindMap(jm, funcNodeList[i], beIDList, beNodeList);
     }
@@ -219,7 +192,7 @@ function addSructures() {
         var sctNodeList = Object.values(gpt_response[beNodeList[i]])
 
         for (let k = 0; k < sctNodeList.length; k++) {
-            sctNodeList[k] = "<h4>" + sctIDList[k] + "</h4> " + sctNodeList[k];
+            sctNodeList[k] = "<h3>" + sctIDList[k] + "</h3> <hr>" + sctNodeList[k];
         }
         addData2MindMap(jm, beNodeList[i], sctIDList, sctNodeList);
     }
@@ -246,7 +219,7 @@ function addKansei() {
         var kanseiNodeList = Object.values(gpt_response[kanseiTypeList[i]]);
 
         for (let k = 0; k < kanseiNodeList.length; k++) {
-            kanseiNodeList[k] = "<h4>" + kanseiIDList[k] + "</h4> " + kanseiNodeList[k];
+            kanseiNodeList[k] = "<h3>" + kanseiIDList[k] + "</h3> <hr> " + kanseiNodeList[k];
         }
         addData2MindMap(jm_kansei, kanseiTypeList[i], kanseiIDList, kanseiNodeList);
 
@@ -276,18 +249,243 @@ function addImage() {
     var imgList = gpt_response;
 
     // 清空现有的图片
-    $('.image-container').empty();
+    $('.image-box').empty();
 
     // 添加新图片
     for (var i = 0; i < imgList.length; i++) {
-        $('.image-container').append('<img src="/static/' + imgList[i] + '" alt="Image" />');
+        $('.image-box').append('<img src="/static/' + imgList[i] + '" alt="Image" />');
     }
 }
 
-function genRandomID() {
-    const randomNumber = Math.floor(Math.random() * 100000) + 1; // 随机生成1～100000的整数
-    return randomNumber.toString(); // 转换为字符串
+
+// 右键菜单栏
+// 右键添加菜单
+function createContextMenu() {
+    const $container = $('.mindmap-container');
+    // 先移除旧的 contextMenu，避免多个菜单
+    $("#contextMenu").remove();
+
+    const $menu = $(
+        `<div id="contextMenu">
+            <ul>
+                <li id="addNode">Add Node</li>
+                <li id="removeNode">Delete Node</li>
+                <li id="reload">Reload </li>
+            </ul>
+        </div>`
+    ).css({
+        display: "none",
+        position: "absolute",
+        zIndex: 9999  // 使菜单显示在最前面
+    }).appendTo('.mindmap-container');
+
+    // 容器上的右键点击事件
+    $container.off("contextmenu").on("contextmenu", function (event) {
+        event.preventDefault();
+        const x = event.clientX;
+        const y = event.clientY;
+
+        $menu.css({
+            left: x,
+            top: y,
+            display: "block"
+        });
+    });
+
+    // 绑定单击事件到菜单项
+    $("#addNode").off('click').on('click', function (event) {
+        event.stopPropagation();
+        if (DesignMAP === 'fbs' && jm.get_selected_node() !== null) {
+            menuAddChild(jm);
+        } else if (DesignMAP === 'kansei' && jm_kansei.get_selected_node() !== null) {
+            menuAddChild(jm_kansei);
+        } else {
+            alert("Please at least select one node!")
+        }
+
+        $menu.hide();
+
+    });
+
+    $("#removeNode").off('click').on('click', function (event) {
+        event.stopPropagation();
+        if (DesignMAP === 'fbs' && jm.get_selected_node() !== null) {
+            menuRemoveChild(jm);
+        } else if (DesignMAP === 'kansei' && jm_kansei.get_selected_node() !== null) {
+            menuRemoveChild(jm_kansei);
+        } else {
+            alert("Please at least select one node!")
+        }
+
+        $menu.hide();
+    });
+
+    $("#reload").off('click').on('click', function (event) {
+        event.stopPropagation();
+        if (DesignMAP === 'fbs' && jm.get_selected_node() !== null) {
+            reload(jm);
+        } else if (DesignMAP === 'kansei' && jm_kansei.get_selected_node() !== null) {
+            reload(jm_kansei);
+        } else {
+            alert("Please at least select one node!")
+        }
+
+        $menu.hide();
+    });
+
+    $container.off("click").on("click", function () {
+        $menu.hide();
+    });
 }
+
+function menuAddChild(jmInstance) {
+    let selectedNode = jmInstance.get_selected_node()
+    jmInstance.add_node(selectedNode.id, genRandomID(), 'New Node', null, 'right')
+}
+
+function menuRemoveChild(jmInstance) {
+    let selectedNode = jmInstance.get_selected_node()
+    jmInstance.remove_node(selectedNode)
+
+}
+
+/**
+ * 重新加载选定节点的数据。
+ * @param {Object} jmInstance - 思维导图的实例。
+ * @returns {FormData} 返回要发送到后端的FormData对象。
+ */
+function reload(jmInstance) {
+    let selectedNode = jmInstance.get_selected_node();
+
+    let reload_type = findNodeType(jmInstance.get_root().id, selectedNode);
+
+    var reloadData = new FormData();
+
+    const DesignID = {
+        SINGLE_FUNCTION: 'signleFunction',
+        SINGLE_BEHAVIOR: 'signleBehavior',
+        SINGLE_STRUCTURE: 'signleStructure',
+        SINGLE_COLOR: 'signleColor',
+        SINGLE_SHAPE: 'signleShape',
+        SINGLE_TEXTURE: 'signleTexture'
+    };
+
+    if (DesignID[reload_type]) {
+        reloadData.append('designID', DesignID[reload_type]);
+        sendDataToBackend(reloadData).then(() => {
+            console.log(gpt_response)
+            addReloadNode(jmInstance, selectedNode, reload_type)
+
+        }).catch((error) => {
+            console.log("Error while sending data: ", error);
+        });
+
+
+    } else {
+        // 错误处理，可以根据实际需要添加更多逻辑
+        console.warn('Invalid or unknown node type:', reload_type);
+    }
+
+    // return selectedNode;
+}
+
+
+/**
+ * 根据选定的思维导图和节点，确定节点的类型。
+ * @param {string} selectMap - 思维导图的类型，如 "fbs"。
+ * @param {Object} selectedNode - 选定的节点。
+ * @returns {string} 返回节点的类型。
+ */
+function findNodeType(selectMap, selectedNode) {
+    if (!selectedNode) {
+        return 'selectedNode InvalidNode'; // 或其他适当的错误处理
+    }
+
+    if (selectMap === 'Design') {
+        return findFBSNodeType(selectedNode);
+    } else {
+        return findOtherNodeType(selectedNode);
+    }
+}
+
+/**
+ * 辅助函数：根据FBS思维导图的节点，确定节点的类型。
+ * @param {Object} selectedNode - 选定的节点。
+ * @returns {string} 返回节点的类型。
+ */
+function findFBSNodeType(selectedNode) {
+    const FBSNodeType = {
+        NO: 'Root',
+        SINGLE_FUNCTION: 'SINGLE_FUNCTION',
+        SINGLE_BEHAVIOR: 'SINGLE_BEHAVIOR',
+        SINGLE_STRUCTURE: 'SINGLE_STRUCTURE'
+    };
+
+    // 检查 selectedNode 是否为 null 或 undefined
+    if (!selectedNode) {
+        console.log('UnknownType')
+        return 'findFBSNodeType selectedNode UnknownType: null or undefined'; // 或者其他适当的处理
+    }
+
+    let depth = 0;
+    let currentNode = selectedNode;
+    console.log(currentNode)
+
+
+    while (currentNode && currentNode.parent !== null) {
+        depth++;
+        currentNode = currentNode.parent;
+    }
+
+    switch (depth) {
+        case 0: return FBSNodeType.NO;
+        case 1: return FBSNodeType.NO;
+        case 2: return FBSNodeType.SINGLE_FUNCTION;
+        case 3: return FBSNodeType.SINGLE_BEHAVIOR;
+        case 4: return FBSNodeType.SINGLE_STRUCTURE;
+        default: return 'depth UnknownType';
+    }
+}
+
+/**
+ * 辅助函数：根据其他类型思维导图的节点，确定节点的类型。
+ * @param {Object} selectedNode - 选定的节点。
+ * @returns {string} 返回节点的类型。
+ */
+function findOtherNodeType(selectedNode) {
+    const OtherNodeType = {
+        SINGLE_COLOR: 'SINGLE_COLOR',
+        SINGLE_SHAPE: 'SINGLE_SHAPE',
+        SINGLE_TEXTURE: 'SINGLE_TEXTURE'
+    };
+
+    let type = selectedNode.parent ? selectedNode.parent.id : '';
+
+    switch (type) {
+        case 'Color': return OtherNodeType.SINGLE_COLOR;
+        case 'Shape': return OtherNodeType.SINGLE_SHAPE;
+        case 'Texture': return OtherNodeType.SINGLE_TEXTURE;
+        default: return 'findOtherNodeType UnknownType';
+    }
+}
+
+
+function addReloadNode(jmInstance, selectedNode, reload_type) {
+    if (reload_type === 'SINGLE_FUNCTION') {
+        addFunctions();
+    } else {
+        var parentID = selectedNode.parent.id
+        var nodeIDList = Object.keys(gpt_response)
+        var nodeList = Object.values(gpt_response)
+        nodeList = "<h3>" + nodeIDList + "</h3> <hr>" + nodeList
+
+        addData2MindMap(jmInstance, parentID, [nodeIDList], [nodeList])
+    }
+
+}
+
+
+
 
 
 

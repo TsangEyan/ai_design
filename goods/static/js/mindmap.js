@@ -1,6 +1,3 @@
-var jm = null
-var jm_kansei = null
-
 function addData2MindMap(targetMindMap, parentID, nodeID, nodeList) {
     for (let i = 0; i < nodeList.length; i++) {
         targetMindMap.add_node(parentID, nodeID[i], nodeList[i], null, "right")
@@ -30,7 +27,6 @@ function initMapData(topic, container) {
         },
 
     };
-
     return { mind, options }
 }
 
@@ -67,7 +63,3 @@ function initMindMapKansei(topic) {
     });
 
 }
-
-
-
-

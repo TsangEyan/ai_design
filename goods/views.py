@@ -80,6 +80,14 @@ def UI_mindmap(request):
             imgList = generate_img(prompt)
             return JsonResponse(imgList, safe=False)
 
+        # reload signleNode
+        else:
+            response = get_completion_from_messages(
+                generate_reload_node(designID))
+            print('return reload', response)
+            # print(type(response)) # <class 'dict'>
+            return JsonResponse(response)
+
     return render(request, "UI_mindmap.html")
 
 
@@ -114,7 +122,7 @@ def string2json(data_string):
         data_json = json.loads(data_string)
         return data_json
     except json.JSONDecodeError:
-        response = reload()
+        response = reloadJson()
         string2json(response)
 
 
@@ -128,16 +136,16 @@ def generate_requirements_prompt(design):
 
     prompt = f"""
          Answer the following six questions according to the design problem:
-            1 - Who will use this product? 
-            2 - What will the user do with this product? 
-            3 - When will this product be used? 
-            4 - Why do users use this product? 
-            5 - Where will this product be used? 
-            6 - How will this product be used? 
-        
-        Design problem given by triple backticks : 
+            1 - Who will use this product?
+            2 - What will the user do with this product?
+            3 - When will this product be used?
+            4 - Why do users use this product?
+            5 - Where will this product be used?
+            6 - How will this product be used?
+
+        Design problem given by triple backticks :
         ```{design}``` \
-       
+
         Output JSON: <json with who/what/when/why/where/how and Answer>\
         Only provide the JSON output and do not include any unnecessary words.\
 
@@ -151,12 +159,12 @@ def generate_requirements_prompt(design):
 
 def generate_functions_prompt(design):
     prompt = f"""
-        Product design requirement given by triple backticks: 
+        Product design requirement given by triple backticks:
             ```{design}```
         What functions does the product need to have in order to meet these requirements? \
 
         I would like to receive a JSON format output, where each entry has a key as a brief name of the function, and the value is a detailed description of that function. For example: "Brief Name": "Function Description". \
-        Only provide the JSON output and do not include any unnecessary words. 
+        Only provide the JSON output and do not include any unnecessary words.
 
         """
     messageList.append({'role': 'user', 'content': prompt})
@@ -165,7 +173,7 @@ def generate_functions_prompt(design):
 
 def generate_behaviors_prompt(design):
     prompt = f"""
-        Functions of the product given by triple backticks: 
+        Functions of the product given by triple backticks:
             ```{design}```
 
         What behaviors should the product implement to enable the above functions? Use the FBS model to reason about all behaviors, focusing solely on behaviors, not structures.
@@ -195,7 +203,7 @@ def generate_structures_prompt(design):
             ```{design}```
 
         What structures can achieve the above behaviors? Please Use the FBS model to reason the substructures of this product.\
-        
+
         I would like to receive a JSON format output. I expect the output in the following JSON format:\
         {{
             "Behavior_Name": {{
@@ -219,9 +227,9 @@ def generate_structures_prompt(design):
 
 def generate_kansei(nouns, adjectives):
 
-    prompt = f""" 
+    prompt = f"""
         Please provide a specific appearance design scheme based on Kansei engineering in terms of shape, color and texture,
-        ensuring that the elements of ```{nouns}``` are incorporated and ```{adjectives}``` emotions are conveyed. 
+        ensuring that the elements of ```{nouns}``` are incorporated and ```{adjectives}``` emotions are conveyed.
 
          I would like to receive a JSON format output. I expect the output in the following JSON format:
         {{
@@ -238,7 +246,7 @@ def generate_kansei(nouns, adjectives):
                  "key(Using Phrase Summary Values)": "value(brief description)",
                 ...
             }}
-            
+
         }}
         Only provide the JSON output and do not include any unnecessary words.
         """
@@ -273,7 +281,7 @@ def generate_img(design):
     return static_file_path_list
 
 
-def reload():
+def reloadJson():
     messageList.append(
         {'role': 'user', 'content': 'I just need an output in pure JSON format. No explanations, comments or additional text is needed. Please follow this format strictly.'})
 
@@ -288,6 +296,22 @@ def reload():
     return response.choices[0].message["content"]
 
 
+def generate_reload_node(design):
+    result_str = remove_prefix_from_string(design)
+    prompt = f"""
+        Please add one new ```{result_str}```to the existing list of ```{result_str}```, and output only the new ```{result_str}``` in JSON format.
+        
+        I would like to receive a JSON format output. I expect the output in the following JSON format:
+        {{ "key(Using Phrase Summary the value)": "value(brief description of behavior)"}},\
+
+        Only provide the JSON output and do not include any unnecessary words.\
+        I just need an output in pure JSON format. No explanations, comments or additional text is needed. Please follow this format strictly.\
+        """
+
+    messageList.append({'role': 'user', 'content': prompt})
+    return messageList
+
+
 def generate_prompt_test(design):
     animal = 'cat'
     return """Suggest three names for an animal that is a superhero.
@@ -300,3 +324,7 @@ def generate_prompt_test(design):
         Names:""".format(
         animal.capitalize()
     )
+
+
+def remove_prefix_from_string(s):
+    return s[6:]
