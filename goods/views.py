@@ -42,7 +42,7 @@ def UI_mindmap(request):
             print(prompt)
             response = get_completion_from_messages(
                 generate_functions_prompt(prompt))
-            print(response)
+            print('Return 5W1H', response)
             return JsonResponse(response)
 
         # 输入Function 输出Behaviors
@@ -51,7 +51,7 @@ def UI_mindmap(request):
             print(prompt)
             response = get_completion_from_messages(
                 generate_behaviors_prompt(prompt))
-            print(response)
+            print('Return Functions', response)
             # print(type(response)) # <class 'dict'>
             return JsonResponse(response)
 
@@ -61,7 +61,7 @@ def UI_mindmap(request):
             print(prompt)
             response = get_completion_from_messages(
                 generate_structures_prompt(prompt))
-            print(response)
+            print('Return Behaviors', response)
             # print(type(response)) # <class 'dict'>
             return JsonResponse(response)
 
@@ -69,10 +69,11 @@ def UI_mindmap(request):
         elif designID == 'Kansei':
             kanseiN = request.POST['kansei_n']
             kanseiA = request.POST['kansei_a']
-            # print(prompt)
+            print(kanseiN)
+            print(kanseiA)
             response = get_completion_from_messages(
                 generate_kansei(kanseiN, kanseiA))
-            print(response)
+            print('Return Kansei', response)
             # print(type(response)) # <class 'dict'>
             return JsonResponse(response)
 
@@ -83,9 +84,10 @@ def UI_mindmap(request):
 
         # reload signleNode
         else:
+            print(designID)
             response = get_completion_from_messages(
                 generate_reload_node(designID))
-            print('return reload', response)
+            print('Return reload', response)
             # print(type(response)) # <class 'dict'>
             return JsonResponse(response)
 
@@ -235,20 +237,26 @@ def generate_kansei(nouns, adjectives):
          I would like to receive a JSON format output. I expect the output in the following JSON format:
         {{
             "Shape": {{
-                "key(Using Phrase Summary Values)": "value(brief description)",
+                "key(Using Phrase Summary Values)": "value( description)",
+                "key(Using Phrase Summary Values)": "value(description)",
+                "key(Using Phrase Summary Values)": "value(description)",
                 ...
             }},
             "Color": {{
-               "key(Using Phrase Summary Values)": "value(brief description)",
-                "key(Using Phrase Summary Values)": "value(brief description)",
+               "key(Using Phrase Summary Values)": "value(description)",
+                "key(Using Phrase Summary Values)": "value(description)",
+                "key(Using Phrase Summary Values)": "value(description)",
                 ...
             }},
             "Texture": {{
-                 "key(Using Phrase Summary Values)": "value(brief description)",
+                 "key(Using Phrase Summary Values)": "value(description)",
+                 "key(Using Phrase Summary Values)": "value(description)",
+                 "key(Using Phrase Summary Values)": "value(description)",
                 ...
             }}
 
         }}
+        
         Only provide the JSON output and do not include any unnecessary words.
         """
 
@@ -259,11 +267,11 @@ def generate_kansei(nouns, adjectives):
 def generate_img(design):
     static_file_path_list = []
     default_client = replicate.Client(
-        api_token='r8_7XJFtAPvX80YGQshB7D3BCJtVSCdCVu4ZajqN')
+        api_token='r8_AlA4KaZYJzBhZNCpdtHPuvDQ4BI4NIv16OzX5')
 
     for i in range(4):
         output = default_client.run(
-            "stability-ai/stable-diffusion:27b93a2413e7f36cd83da926f3656280b2931564ff050bf9575f1fdf9bcd7478",
+            "stability-ai/stable-diffusion:ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4",
             input={"prompt": design}
         )
         # 生成随机的9位字符串
@@ -284,7 +292,7 @@ def generate_img(design):
 
 def reloadJson():
     messageList.append(
-        {'role': 'user', 'content': 'I just need an output in pure JSON format. No explanations, comments or additional text is needed. Please follow this format strictly.'})
+        {'role': 'user', 'content': 'I just need an output in pure JSON format and dictionary type. No explanations, comments or additional text is needed. Please follow this format strictly.'})
 
     response = openai.ChatCompletion.create(
         model="gpt-4",
@@ -299,6 +307,8 @@ def reloadJson():
 
 def generate_reload_node(design):
     result_str = remove_prefix_from_string(design)
+    print('————————————————————————————————————————————————————————————')
+    print('reload', result_str)
     prompt = f"""
         Please add one new ```{result_str}```to the existing list of ```{result_str}```, and output only the new ```{result_str}``` in JSON format.
         
