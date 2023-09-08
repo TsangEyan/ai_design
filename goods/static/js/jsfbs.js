@@ -286,7 +286,7 @@ function createContextMenu() {
             <ul>
                 <li id="addNode">Add Node</li>
                 <li id="removeNode">Delete Node</li>
-                <li id="reload">Reload </li>
+                <li id="reload">Regenerate </li>
             </ul>
         </div>`
     ).css({
