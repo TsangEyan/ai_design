@@ -72,7 +72,7 @@ document.addEventListener('keydown', function (e) {
         // 检查哪个思维导图实例被选中
         let selectedNode;
         // 检查哪个思维导图实例被选中
-        if (jm.get_selected_node()) {
+        if (jm.get_selected_node() != 'null') {
             selectedNode = jm.get_selected_node(); // jm 的选中节点
         } else if (jm_kansei.get_selected_node()) {
             selectedNode = jm_kansei.get_selected_node(); // jm_kansei 的选中节点

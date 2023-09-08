@@ -246,12 +246,12 @@ function addKansei() {
 
 function getDiffusion() {
     var diffusionData = new FormData()
-    var design = $('#message').val();
+    var design = $('#design-problem').val();
     var shapeValue = $('#shape-answer').val();
     var colorValue = $('#color-answer').val();
     var textureValue = $('#texture-answer').val();
 
-    var diffusionString = "Product shot of" + design + shapeValue + " " + colorValue + " " + textureValue;
+    var diffusionString = "Product shot of" + design + shapeValue + ", " + colorValue + ", " + textureValue;
 
 
     diffusionData.append("designID", "Image")
