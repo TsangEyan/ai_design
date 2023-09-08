@@ -11,7 +11,7 @@ $(document).ready(function () {
         let newQuestionContainer = `
         <div class="question-container">
           <div class="question-box">
-            <div class="kanseibox-container" data-label="design-concept${counter}">Structures ${counter}</div>
+            <div class="kanseibox-container" data-label="design-concept${counter}">Structure ${counter}</div>
           </div>
           <div class="answer-box">
             <textarea id="design-concept${counter}-answer" class="kansei-scheme-textarea"
