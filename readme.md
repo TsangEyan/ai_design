@@ -14,3 +14,5 @@ python manage.py runserver
 # 键盘操作
 
 ![键盘操作](./键盘操作.png)
+
+# 大屏界面截图版
