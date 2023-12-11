@@ -14,6 +14,6 @@ Conceptual design is a pivotal phase of product development, encompassing user r
 python manage.py runserver
 ```
 
-![键盘操作](./键盘操作.png)
+![3](./3.png)
 
 
