@@ -19,6 +19,7 @@ body::-webkit-scrollbar {
 
 /* hover时显色 */
 .container:hover ::-webkit-scrollbar-thumb {
+    /* background: #3498db; */
     background: #fcbc6d;
 }
 
@@ -29,9 +30,12 @@ body::-webkit-scrollbar {
 
 /* 滚动槽 */
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: #fcbc6d;
-    box-shadow: #fcbc6d;
-    border-radius: #fcbc6d;
+    /* -webkit-box-shadow: #3498db; */
+    -webkit-box-shadow:  #fcbc6d;
+    /* box-shadow: #3498db; */
+    box-shadow:  #fcbc6d;
+    /* border-radius: #3498db; */
+    border-radius:  #fcbc6d;
 }
 
 /* 滚动条滑块 */
@@ -56,10 +60,10 @@ body::-webkit-scrollbar {
 }
 
 .left-sidebar {
-    width: 25%;
+    width: 22%;
     height: 94.4vh;
     padding: 0 20px;
-    margin-top: 62px;
+    margin-top: 64px;
     border-radius: 5px;
     overflow-y: auto;
     /* overflow: hidden; */
@@ -74,13 +78,13 @@ body::-webkit-scrollbar {
     justify-content: flex-start;
     
     align-items: center;
-    width: 50%;
+    width: 56%;
 }
 
 .right-sidebar {
-    width: 25%;
+    width: 22%;
     height: 89vh;
-    margin-top: 62px;
+    margin-top: 64px;
     padding: 0 20px;
     border-radius: 5px;
     overflow-y: auto;
@@ -197,25 +201,40 @@ body::-webkit-scrollbar {
 }
 
 .button-container.fbs-kansei-select > button {
-    width: 260px;
+    width: 285px;
 
     margin: 0 10px 0 10px;
     padding: 10px;
     font-size: 26px;
 }
 
-#fbs-button, #kansei-button {
+#fbs-button {
     background-color: #fff;
     color: black;
-    border:  1px solid #ffa63b;
+    border:  2px solid #ffa63b;
     border-radius: 5px;
 
 }
 
-#fbs-button.active, #kansei-button.active {
+#kansei-button {
+    background-color: #fff;
+    color: black;
+    border:  2px solid #81AED8;
+    border-radius: 5px;
+
+}
+
+#fbs-button.active{
     background-color: #ffa63b;
     color: #fff;
 }
+
+ #kansei-button.active {
+    background-color: #81AED8;
+    color: #fff;
+}
+
+
 
 .mindmap-container {
     width: 100%;
@@ -367,7 +386,8 @@ textarea {
     background-color: #ffa63b;
     width: 100%;
     color: white;
-    font-size: 20px;
+    font-size: 22px;
+    font-weight: bolder;
     cursor: pointer;
     border-radius: 5px;
     transition: background-color 0.3s ease-in-out;
@@ -469,12 +489,27 @@ textarea {
 }
 
 .label-kansei {
-    background-color: #f7ce94;
+    background-color: #e5f1fc;
     border-radius: 5px;
     font-weight: 100;
     padding: 5px;
+    color: #324353
 }
 
 .right_bottom > .button-container {
     margin-top: auto;
 } 
+
+#kansei-words-n, #kansei-words-a, #shape-answer, #color-answer, #texture-answer {
+    border-color: #dfeaf5;
+    background: #dfeaf5;
+
+}
+
+#kansei-words, #image-generate {
+    background-color: #81AED8;
+}
+
+.kanseibox-container-label-font-color {
+    color: #324353;
+}

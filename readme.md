@@ -1,18 +1,19 @@
-# 启动
+# DesignFusion: Integrating Generative Models for Conceptual Design Enrichment
 
-==**环境**==：design_aid
-`source /home/clq/anaconda3/bin/activate design_aid`
+Conceptual design is a pivotal phase of product development, encompassing user requirement exploration and informed solution generation. Recent generative models with their powerful content generation capabilities have been applied to conceptual design tasks to support designers’ ideation. However, the lack of transparency in their generation process and the shallow nature of their generated solutions constrain their performance in complex conceptual design tasks. In this study, we first introduce a conceptual design generation framework based on Large Language Models (LLMs) and Text-to-image Models. This framework decomposes the conceptual design task based on design process and design attributes, employing multi-step reasoning to generate structure and appearance design for products. Then we present an interactive system, DesignFusion, empowering designers to trace the generation process and control inputs/outputs at each reasoning step.
 
-**==位置==**：`/media/ssd/design_aid/design_aid_tool/website`
+![1](/Users/eyan/Library/Mobile Documents/com~apple~CloudDocs/学习/研究生/嗑盐打工日常/项目/FBS/design_aid/website_show/1.png)
 
-启动
+![2](/Users/eyan/Library/Mobile Documents/com~apple~CloudDocs/学习/研究生/嗑盐打工日常/项目/FBS/design_aid/website_show/2.png)
+
+
+
+# Running a Simulation
 
 ```shell
 python manage.py runserver
 ```
 
-# 键盘操作
-
 ![键盘操作](./键盘操作.png)
 
-# 大屏界面截图版
+

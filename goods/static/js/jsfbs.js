@@ -85,7 +85,7 @@ $(document).ready(function () {
         var kanseiData = getKansei();
 
         sendDataToBackend(kanseiData).then(() => {
-            initMindMapKansei("Design")
+            initMindMapKansei("Kansei")
             addKansei()
         }).catch((error) => {
             console.log("Error while sending data: ", error);
@@ -95,12 +95,15 @@ $(document).ready(function () {
 
     // 向diuffusion输入prompt
     $('#image-generate').click(function () {
-        var imgData = getDiffusion();
-        sendDataToBackend(imgData).then(() => {
-            addImage()
-        }).catch((error) => {
-            console.log("Error while sending data: ", error);
-        });
+        $(".image-box").removeClass('hidden');
+        // var imgData = getDiffusion();
+        // sendDataToBackend(imgData).then(() => {
+        //     addImage()
+        // }).catch((error) => {
+        //     console.log("Error while sending data: ", error);
+        // });
+
+
 
     });
 

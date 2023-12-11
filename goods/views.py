@@ -77,10 +77,10 @@ def UI_mindmap(request):
             # print(type(response)) # <class 'dict'>
             return JsonResponse(response)
 
-        elif designID == 'Image':
-            prompt = request.POST['image']
-            imgList = generate_img(prompt)
-            return JsonResponse(imgList, safe=False)
+        # elif designID == 'Image':
+        #     prompt = request.POST['image']
+        #     imgList = generate_img(prompt)
+        #     return JsonResponse(imgList, safe=False)
 
         # reload signleNode
         else:
