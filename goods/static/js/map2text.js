@@ -11,7 +11,7 @@ $(document).ready(function () {
         let newQuestionContainer = `
         <div class="question-container">
           <div class="question-box">
-            <div class="kanseibox-container" data-label="design-concept${counter}">Structure ${counter}</div>
+            <div class="design-concept-container addtextselect" data-label="design-concept${counter}">结构 ${counter}</div>
           </div>
           <div class="answer-box">
             <textarea id="design-concept${counter}-answer" class="kansei-scheme-textarea"
@@ -24,7 +24,7 @@ $(document).ready(function () {
         counter++;
     });
 
-    $('.map2text-container').on('click', '.kanseibox-container', function () {
+    $('.map2text-container').on('click', '.addtextselect', function () {
         selectedLabel = $(this).data('label');
         updateSelectedBackground();
     });
@@ -34,7 +34,7 @@ $(document).ready(function () {
 
 
 // 点击kanseibox-container更改当前选中内容
-document.querySelectorAll('.kanseibox-container').forEach((label) => {
+document.querySelectorAll('.addtextselect').forEach((label) => {
     label.addEventListener('click', function () {
         selectedLabel = this.getAttribute('data-label');
     });
@@ -42,7 +42,7 @@ document.querySelectorAll('.kanseibox-container').forEach((label) => {
 
 function updateSelectedBackground() {
     // 移除所有已经被选中的背景色
-    $('.kanseibox-container').removeClass('selected');
+    $('.addtextselect').removeClass('selected');
 
     // 添加新的背景色
     const selectedElem = $(`[data-label="${selectedLabel}"]`);
@@ -72,9 +72,9 @@ document.addEventListener('keydown', function (e) {
         // 检查哪个思维导图实例被选中
         let selectedNode;
         // 检查哪个思维导图实例被选中
-        if (jm.get_selected_node() != 'null') {
+        if (jm && jm.get_selected_node() != 'null') {
             selectedNode = jm.get_selected_node(); // jm 的选中节点
-        } else if (jm_kansei.get_selected_node()) {
+        } else if (jm_kansei && jm_kansei.get_selected_node()) {
             selectedNode = jm_kansei.get_selected_node(); // jm_kansei 的选中节点
         }
 
