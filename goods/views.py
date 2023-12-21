@@ -16,7 +16,6 @@ from PIL import Image, PngImagePlugin
 
 # Create your views here.
 openai.api_key = "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"
-# openai.api_key = "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"
 messageList = []
 
 

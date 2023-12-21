@@ -4,7 +4,7 @@ function addData2MindMap(targetMindMap, parentID, nodeID, nodeList) {
     }
 }
 
-function initMapData(topic, container) {
+function initMapData(topic, container, theme) {
     var mind = {
         "meta": {
             "name": "AI Design",
@@ -21,7 +21,7 @@ function initMapData(topic, container) {
     var options = {
         container: container,
         editable: true,
-        theme: 'pumpkin',
+        theme: theme,
         view: {
             node_overflow: 'wrap' // 节点文本过长时的样式
         },
@@ -38,7 +38,7 @@ function createMindMap(options, mind, jmVariable) {
 
 
 function initMindMap(topic) {
-    const { mind, options } = initMapData(topic, 'fbs-mindmap');
+    const { mind, options } = initMapData(topic, 'fbs-mindmap', 'pumpkin');
     jm = createMindMap(options, mind, jm);
     // 为第一个思维导图实例 jm 添加点击事件监听器
     jm.add_event_listener(function (type, o) {
@@ -51,7 +51,7 @@ function initMindMap(topic) {
 }
 
 function initMindMapKansei(topic) {
-    const { mind, options } = initMapData(topic, 'kansei-mindmap');
+    const { mind, options } = initMapData(topic, 'kansei-mindmap', 'belizehole');
     jm_kansei = createMindMap(options, mind, jm_kansei);
     // 为第二个思维导图实例 jm_kansei 添加点击事件监听器
     jm_kansei.add_event_listener(function (type, o) {
